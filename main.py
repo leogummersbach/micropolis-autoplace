@@ -5,6 +5,7 @@ from tkinter.scrolledtext import ScrolledText
 from tkinter import ttk
 from module_connections import *
 from PIL import ImageGrab
+from studioexport import *
 
 
 width = 100
@@ -356,7 +357,36 @@ def exportCanvas():
     x1=x+canvas.winfo_width()
     y1=y+canvas.winfo_height()
     ImageGrab.grab().crop((x,y,x1,y1)).save(dir + "/" + str(unique_name) + ".png")
+    
+def exportLDraw():
+    exportWindow = Toplevel(window)
+    exportWindow.title("Export")
+    exportWindow.geometry("300x100")
 
+    if(globalImageArray == None):
+        exportWindow.destroy()
+
+    name = StringVar()
+    name.set("export")
+    exporter = StudioExport(globalImageArray, name.get())
+    notfound = exporter.precheck()
+    exportable = len(notfound) == 0
+
+    def callExportLDRaw():
+        exporter.name = name.get()
+        exporter.createFile()
+
+    buttonstate = "normal"
+    labeltext = "Everything ready"
+    if(not exportable):
+        buttonstate = "disabled"
+        labeltext = "Did not found the following files: \n" + "\n".join(notfound)
+    entry = Frame(exportWindow)
+    entry.pack()
+    Label(entry, text="name").pack(side="left")
+    Entry(entry, textvariable=name).pack(side="left")
+    Button(exportWindow, text="Export!", command=callExportLDRaw, state=buttonstate).pack()
+    Label(exportWindow, text=labeltext).pack()
 
 #FRAME
 #selected customs list preview
@@ -449,6 +479,7 @@ statelabel.pack()
 Scale(menuframe, orient="horizontal", from_=100, to=10000, resolution=100, variable=max_inits).pack()
 Label(menuframe, text="Maximum attempts").pack()
 Button(menuframe, text="Export image", command=exportCanvas).pack()
+Button(menuframe, text="Export LDraw file", command=exportLDraw).pack()
 useCustomsCheckbutton = Checkbutton(menuframe, variable=useCustoms, text="Use Custom Connections")
 useCustomsCheckbutton.pack()
 Checkbutton(menuframe, variable=consumeCustoms, text="Consume Custom Modules").pack()
