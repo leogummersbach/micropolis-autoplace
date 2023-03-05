@@ -43,6 +43,7 @@ def drawGrid(x, y, useCustoms=False, consumeCustoms=True, verbose=False):
         if(i % percent == 0):
             if verbose: print(f"{int(i/percent)} %")
             state.set(f"{int(i/percent)} %")
+            statelabel.update()
         imagearray = ImageArray()
         for h in high_prio:
             sl = Module_connections()
@@ -51,11 +52,19 @@ def drawGrid(x, y, useCustoms=False, consumeCustoms=True, verbose=False):
             imagearray.addHighPriority(h, sl.streetLocations)
 
         success = imagearray.init_array(x, y, mindCustoms=useCustoms, consumeCustoms=consumeCustoms, verbose=False)
-        if(len(imagearray.highPriority) < bestScore):
-            #new best score
-            bestScore = len(imagearray.highPriority)
-            bestResult = copy.deepcopy(imagearray.dict)
-        if(success and ((not consumeCustoms) or len(imagearray.highPriority) <= left_allowed or i == max_inits.get()-1)):
+
+        if(consumeCustoms):
+            if(len(imagearray.highPriority) < bestScore):
+                #new best score
+                bestScore = len(imagearray.highPriority)
+                bestResult = copy.deepcopy(imagearray.dict)
+        else:
+            if(imagearray.countDefaults() < bestScore):
+                #new best score
+                bestScore = imagearray.countDefaults()
+                bestResult = copy.deepcopy(imagearray.dict)
+
+        if(success and (((not consumeCustoms) and imagearray.countDefaults() == 0) or len(imagearray.highPriority) <= left_allowed or i == max_inits.get()-1)):
             if verbose: print(f"Final initialization after {i + 1} attempts. {len(imagearray.highPriority)} high priority modules left, {left_allowed} were allowed.")
             if(i == max_inits.get()-1):
                 imagearray.dict = bestResult
@@ -87,7 +96,7 @@ def redrawGrid(newsize):
 def insertCustomframe_lb(element):
     for i in range(customframe_lb.size()):
         lookat = customframe_lb.get(i)
-        if(lookat.split("x", maxsplit=1)[1] == element):
+        if(lookat.split("x ", maxsplit=1)[1] == element):
             lookat = lookat.split("x", maxsplit=1)
             currentCount = int(lookat[0])
             newentry = str(currentCount+1) + "x" + "".join(lookat[1:])
@@ -435,7 +444,8 @@ consumeCustoms.set(True)
 activateButton = Button(menuframe, text="Generate", command=lambda: drawGrid(x.get(), y.get(), useCustoms.get(), consumeCustoms.get()))
 activateButton.pack()
 state = StringVar()
-Label(menuframe, textvariable=state).pack()
+statelabel = Label(menuframe, textvariable=state)
+statelabel.pack()
 Scale(menuframe, orient="horizontal", from_=100, to=10000, resolution=100, variable=max_inits).pack()
 Label(menuframe, text="Maximum attempts").pack()
 Button(menuframe, text="Export image", command=exportCanvas).pack()

@@ -380,6 +380,13 @@ class ImageArray():
     def isOutside(self, x, y, max_x, max_y):
         return x < 0 or x >= max_x or y < 0 or y >= max_y
 
+    def countDefaults(self):
+        sum = 0
+        for key in self.dict:
+            if (self.dict[key].isDefault()):
+                sum += 1
+        return sum
+
     def init_array(self, size_x, size_y, mindCustoms=False, consumeCustoms=True, verbose=False):
         """
         Initializes an image array with width size_x and height size_y.
