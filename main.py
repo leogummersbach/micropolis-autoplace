@@ -6,6 +6,8 @@ from tkinter import ttk
 from module_connections import *
 from PIL import ImageGrab
 from studioexport import *
+from tkinter import filedialog
+import pathlib
 
 
 width = 100
@@ -375,6 +377,7 @@ def exportLDraw():
     def callExportLDRaw():
         exporter.name = name.get()
         exporter.createFile()
+        exportWindow.destroy()
 
     buttonstate = "normal"
     labeltext = "Everything ready"
@@ -387,6 +390,26 @@ def exportLDraw():
     Entry(entry, textvariable=name).pack(side="left")
     Button(exportWindow, text="Export!", command=callExportLDRaw, state=buttonstate).pack()
     Label(exportWindow, text=labeltext).pack()
+
+def loadGroup():
+    path = str(pathlib.Path().resolve())
+    file = filedialog.askopenfile(initialdir=path+"\groups", title="Select a group file")
+    if (file != None):
+        r = file.read()
+        for line in r.splitlines():
+            high_prio.append("custom_modules/"+line+".png")
+            insertCustomframe_lb(line)
+            customexplanation_update()
+
+def saveGroup():
+    path = str(pathlib.Path().resolve())
+    file = filedialog.asksaveasfile(initialdir=path+"\groups", title="Save group file")
+    if(file != None):
+        for line in high_prio:
+            name = line.split("/")[-1]
+            name = name[:-4]
+            file.write(name)
+            file.write("\n")
 
 #FRAME
 #selected customs list preview
@@ -416,8 +439,12 @@ connections_preview.pack()
 #selected customs list
 customframe = Frame(menuframe)
 customframe.pack()
-customframe_removeAll = Button(customframe, text="Clear", command=clearHighPrio)
+customframe_moreButtons = Frame(customframe)
+customframe_moreButtons.grid(column=0, row=0, sticky=(N,W,E,S))
+customframe_removeAll = Button(customframe_moreButtons, text="Clear", command=clearHighPrio)
 customframe_removeAll.grid(column=0, row=0, sticky=(N,W,E,S))
+Button(customframe_moreButtons, text="Load Group", command=loadGroup).grid(column=1, row=0, sticky=(N,W,E,S))
+Button(customframe_moreButtons, text="Save Group", command=saveGroup).grid(column=2, row=0, sticky=(N,W,E,S))
 customframe_lb = Listbox(customframe, height=10, selectmode=SINGLE)
 customframe_lb.grid(column=0, row=1, sticky=(N,W,E,S))
 customframe_scrollbar = Scrollbar(customframe, orient=VERTICAL, command=customframe_lb.yview)

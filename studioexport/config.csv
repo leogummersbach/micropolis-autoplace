@@ -1,5 +1,25 @@
-name,custom_offset_x,custom_offset_z,custom_rotation_offset
+name,custom_offset_x,custom_offset_y,custom_offset_z,custom_rotation_offset,extra_offset1,extra_offset2,extra_offset3
 
-custom_modules/I_water_2,10,10,0
+custom_modules/I_water_2,10,0,10,0,-20,0,-20
+custom_modules/I_water_4,0,0,320,0,-320,0,-320
+custom_modules/I_water_6,0,0,320,0,-320,0,-320
+custom_modules/U_house4,750,-8,330,0,-1080,0,-1080
+custom_modules/park,0,0,0,0
+custom_modules/L_water_2,30,0,-10,0,-20,0,-20
+custom_modules/L_water_1,30,0,-10,0,-20,0,-20
+custom_modules/I_house1,-10,0,130,0,-120,0,-120
+custom_modules/I_house7,0,0,320,0,-320,0,-320
+custom_modules/I_house2,-70,8,-70,0,140,0,140
+custom_modules/I_house4,-10,0,210,2,-200,0,-200
+custom_modules/I_house5,130,0,10,0,-140,0,-140
+custom_modules/I_house6,-70,128,10,0,60,0,60
+custom_modules/I6,50,0,-10,0,-40,0,-40
+custom_modules/II_house3,30,0,250,0,-280,0,-280
+custom_modules/I_station1,10,0,-30,0,20,0,20
+custom_modules/empirestateLeft,390,48,320,0
+custom_modules/empirestateRight,390,48,10,0
 
-default_modules/I00, 0, 0, 3
+default_modules/I00,0,0,0,3
+default_modules/I10,0,0,0,3
+default_modules/I11,0,0,0,3
+default_modules/I01,0,0,0,3
